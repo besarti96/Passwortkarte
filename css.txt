@@ -1,0 +1,4 @@
+/* markierung des passwortes*/
+.selected {
+    background-color: #ffcc00;
+}

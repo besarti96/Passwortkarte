@@ -1,0 +1,44 @@
+<!DOCTYPE html> <!-- Definiert den Dokumenttyp und die Version von HTML -->
+<html lang="de"> <!-- Beginn des HTML-Dokuments, das "lang" Attribut definiert die Sprache des Dokuments als Deutsch -->
+
+<head> <!-- Beginn des Kopfes des HTML-Dokuments -->
+    <meta charset="UTF-8"> <!-- Definiert das Zeichensetzungskodierungsschema für das Dokument -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Stellt sicher, dass die Seite auf allen Geräten richtig skaliert wird -->
+    <link rel="stylesheet" href="styles.css"> <!-- Verlinkt das CSS-Stylesheet für dieses HTML-Dokument -->
+    <title>Passwortkarte</title> <!-- Setzt den Titel der Webseite, der in der Tab-Leiste des Browsers angezeigt wird -->
+</head> <!-- Ende des Kopfes des HTML-Dokuments -->
+
+<body> <!-- Beginn des Hauptteils des HTML-Dokuments -->
+    <h1>Passwortkarte</h1> <!-- Hauptüberschrift der Webseite -->
+    
+    <?php
+    session_start(); // Startet eine neue oder setzt eine bestehende Session fort
+    require 'generate_table.php'; // Bindet das generate_table.php Skript ein, das für die Erstellung der Passworttabelle benötigt wird
+
+    if (!isset($_SESSION['selected_password'])) { // Überprüft, ob die Session-Variable 'selected_password' gesetzt ist
+        $_SESSION['selected_password'] = ''; // Wenn nicht, setzt die Session-Variable 'selected_password' auf einen leeren String
+    }
+
+    if (isset($_POST['cell_x']) && isset($_POST['cell_y'])) { // Überprüft, ob die POST-Variablen 'cell_x' und 'cell_y' gesetzt sind
+        $_SESSION['selected_password'] .= $_POST['cell_x'] . $_POST['cell_y'] . ', '; // Wenn ja, fügt die Werte der POST-Variablen 'cell_x' und 'cell_y' zur Session-Variable 'selected_password' hinzu
+    }
+    ?>
+
+    <?php echo generateTable(); ?> <!-- Ruft die Funktion generateTable() auf, die im generate_table.php Skript definiert ist, um die Passworttabelle zu erstellen -->
+
+    <?php if (!empty($_SESSION['selected_password'])) : ?> <!-- Überprüft, ob die Session-Variable 'selected_password' nicht leer ist -->
+        <p>Passwort ist: <?php echo rtrim($_SESSION['selected_password'], ', '); ?></p> <!-- Wenn ja, gibt das momentan ausgewählte Passwort aus -->
+        <form method="post"> <!-- Beginn eines Formulars, das die POST-Methode verwendet -->
+            <button type="submit" name="reset">Passwort zurücksetzen</button> <!-- Schaltfläche zum Senden des Formulars, das das Passwort zurücksetzt -->
+        </form> <!-- Ende des Formulars -->
+    <?php endif; ?> <!-- Ende des if-Statements -->
+
+    <?php
+    if (isset($_POST['reset'])) { // Überprüft, ob die POST-Variable 'reset' gesetzt ist
+        $_SESSION['selected_password'] = ''; // Wenn ja, setzt die Session-Variable 'selected_password' zurück auf einen leeren String
+        header('Location: index.php'); // Leitet den Benutzer zur index.php Seite um
+        exit; // Beendet das Skript
+    }
+    ?>
+</body> <!-- Ende des Hauptteils des HTML-Dokuments -->
+</html> <!-- Ende des HTML-Dokuments -->

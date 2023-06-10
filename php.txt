@@ -1,0 +1,37 @@
+<?php
+function randomCharacter() { // Definiert eine Funktion, die ein zufälliges Zeichen aus dem angegebenen Alphabet zurückgibt
+    $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Das Alphabet, aus dem das zufällige Zeichen ausgewählt wird
+    return $alphabet[rand(0, strlen($alphabet) - 1)]; // Gibt ein zufälliges Zeichen aus dem Alphabet zurück
+}
+
+function generateTable() { // Definiert eine Funktion, die eine Tabelle für die Passwortkarte generiert
+    $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Das Alphabet für die Tabellenkopfzeilen
+
+    $table = '<table>'; // Beginnt mit dem Erstellen der Tabelle
+    $table .= '<tr><td></td>'; // Fügt eine leere Zelle am Anfang der Tabelle hinzu
+
+    for ($i = 0; $i < 26; $i++) { // Schleife durch das Alphabet
+        $table .= '<th>' . $alphabet[$i] . '</th>'; // Fügt die Zeichen des Alphabets als Kopfzeilen der Tabelle hinzu
+    }
+
+    $table .= '</tr>'; // Schließt die Kopfzeile der Tabelle ab
+
+    for ($i = 1; $i <= 10; $i++) { // Schleife durch die Zahlen 1 bis 10
+        $table .= '<tr>'; // Beginnt eine neue Tabellenzeile
+        $table .= '<th>' . $i . '</th>'; // Fügt die aktuelle Zahl als Kopfzeile der Tabellenzeile hinzu
+        for ($j = 0; $j < 26; $j++) { // Schleife durch das Alphabet
+            $table .= '<td>'; // Beginnt eine neue Tabellenzelle
+            $table .= '<form method="post">'; // Beginnt ein Formular mit der POST-Methode
+            $table .= '<input type="hidden" name="cell_x" value="' . $alphabet[$j] . '">'; // Fügt ein verstecktes Eingabefeld hinzu, das den Wert des aktuellen Buchstabens des Alphabets speichert
+            $table .= '<input type="hidden" name="cell_y" value="' . $i . '">'; // Fügt ein verstecktes Eingabefeld hinzu, das den Wert der aktuellen Zahl speichert
+            $table .= '<button type="submit" class="' . ($_SESSION['selected_password'] && strpos($_SESSION['selected_password'], $alphabet[$j] . $i) !== false ? 'selected' : '') . '">' . randomCharacter() . '</button>'; // Fügt einen Button hinzu, der ein zufälliges Zeichen anzeigt. Wenn der aktuelle Buchstabe und die aktuelle Zahl im ausgewählten Passwort enthalten sind, wird die Klasse 'selected' hinzugefügt
+            $table .= '</form>'; // Schließt das Formular ab
+            $table .= '</td>'; // Schließt die Tabellenzelle ab
+        }
+        $table .= '</tr>'; // Schließt die Tabellenzeile ab
+    }
+
+    $table .= '</table>'; // Schließt die Tabelle ab
+
+    return $table; // Gibt die erstellte Tabelle zurück
+}
